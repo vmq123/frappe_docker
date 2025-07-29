@@ -164,6 +164,14 @@ docker compose --project-name erpnext-one \
   --env-file ./gitops/erpnext-one.env \
   -f compose.yaml \
   -f overrides/compose.redis.yaml \
+  -f overrides/compose.multi-bench.yaml config > ./gitops/erpnext-one.yaml
+```
+If SSL
+```shell
+docker compose --project-name erpnext-one \
+  --env-file ./gitops/erpnext-one.env \
+  -f compose.yaml \
+  -f overrides/compose.redis.yaml \
   -f overrides/compose.multi-bench.yaml \
   -f overrides/compose.multi-bench-ssl.yaml config > ./gitops/erpnext-one.yaml
 ```
