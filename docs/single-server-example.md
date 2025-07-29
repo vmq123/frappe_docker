@@ -44,28 +44,28 @@ chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 Clone `frappe_docker` repo for the needed YAMLs and change the current working directory of your shell to the cloned repo.
 
 ```shell
-git clone https://github.com/frappe/frappe_docker
+git clone https://github.com/vmq123/frappe_docker
 cd frappe_docker
 ```
 
 Create configuration and resources directory
 
 ```shell
-mkdir ~/gitops
+mkdir ./gitops
 ```
 
-The `~/gitops` directory will store all the resources that we use for setup. We will also keep the environment files in this directory as there will be multiple projects with different environment variables. You can create a private repo for this directory and track the changes there.
+The `./gitops` directory will store all the resources that we use for setup. We will also keep the environment files in this directory as there will be multiple projects with different environment variables. You can create a private repo for this directory and track the changes there.
 
 ### Install Traefik
 
 Basic Traefik setup using docker compose.
 
-Create a file called `traefik.env` in `~/gitops`
+Create a file called `traefik.env` in `./gitops`
 
 ```shell
-echo 'TRAEFIK_DOMAIN=traefik.example.com' > ~/gitops/traefik.env
-echo 'EMAIL=admin@example.com' >> ~/gitops/traefik.env
-echo "HASHED_PASSWORD='$(openssl passwd -apr1 changeit)'" >> ~/gitops/traefik.env
+echo 'TRAEFIK_DOMAIN=traefik.vms88.com' > ./gitops/traefik.env
+echo 'EMAIL=admin@vms88.com' >> ./gitops/traefik.env
+echo "HASHED_PASSWORD='$(openssl passwd -apr1 osboxes.org)'" >> ./gitops/traefik.env
 ```
 
 Note:
@@ -74,7 +74,7 @@ Note:
 - Change the letsencrypt notification email from `admin@example.com` to correct email.
 - Change the password from `changeit` to more secure.
 
-env file generated at location `~/gitops/traefik.env` will look like following:
+env file generated at location `./gitops/traefik.env` will look like following:
 
 ```env
 TRAEFIK_DOMAIN=traefik.example.com
@@ -88,12 +88,18 @@ Deploy the traefik container with letsencrypt SSL
 
 ```shell
 docker compose --project-name traefik \
-  --env-file ~/gitops/traefik.env \
+  --env-file ./gitops/traefik.env \
+  -f overrides/compose.traefik.yaml up -d
+```
+If having SSL:
+```shell
+docker compose --project-name traefik \
+  --env-file ./gitops/traefik.env \
   -f overrides/compose.traefik.yaml \
   -f overrides/compose.traefik-ssl.yaml up -d
 ```
 
-This will make the traefik dashboard available on `traefik.example.com` and all certificates will reside in the Docker volume `cert-data`.
+This will make the traefik dashboard available on `traefik.vms88.com` and all certificates will reside in the Docker volume `cert-data`.
 
 For LAN setup deploy the traefik container without overriding `overrides/compose.traefik-ssl.yaml`.
 
@@ -101,17 +107,17 @@ For LAN setup deploy the traefik container without overriding `overrides/compose
 
 Basic MariaDB setup using docker compose.
 
-Create a file called `mariadb.env` in `~/gitops`
+Create a file called `mariadb.env` in `./gitops`
 
 ```shell
-echo "DB_PASSWORD=changeit" > ~/gitops/mariadb.env
+echo "DB_PASSWORD=osboxes.org" > ./gitops/mariadb.env
 ```
 
 Note:
 
 - Change the password from `changeit` to more secure.
 
-env file generated at location `~/gitops/mariadb.env` will look like following:
+env file generated at location `./gitops/mariadb.env` will look like following:
 
 ```env
 DB_PASSWORD=changeit
@@ -122,7 +128,7 @@ Note: Change the password from `changeit` to more secure one.
 Deploy the mariadb container
 
 ```shell
-docker compose --project-name mariadb --env-file ~/gitops/mariadb.env -f overrides/compose.mariadb-shared.yaml up -d
+docker compose --project-name mariadb --env-file ./gitops/mariadb.env -f overrides/compose.mariadb-shared.yaml up -d
 ```
 
 This will make `mariadb-database` service available under `mariadb-network`. Data will reside in `/data/mariadb`.
@@ -131,45 +137,45 @@ This will make `mariadb-database` service available under `mariadb-network`. Dat
 
 #### Create first bench
 
-Create first bench called `erpnext-one` with `one.example.com` and `two.example.com`
+Create first bench called `erpnext-one` with `one.vms88.com` and `two.vms88.com`
 
-Create a file called `erpnext-one.env` in `~/gitops`
+Create a file called `erpnext-one.env` in `./gitops`
 
 ```shell
-cp example.env ~/gitops/erpnext-one.env
-sed -i 's/DB_PASSWORD=123/DB_PASSWORD=changeit/g' ~/gitops/erpnext-one.env
-sed -i 's/DB_HOST=/DB_HOST=mariadb-database/g' ~/gitops/erpnext-one.env
-sed -i 's/DB_PORT=/DB_PORT=3306/g' ~/gitops/erpnext-one.env
-sed -i 's/SITES=`erp.example.com`/SITES=\`one.example.com\`,\`two.example.com\`/g' ~/gitops/erpnext-one.env
-echo 'ROUTER=erpnext-one' >> ~/gitops/erpnext-one.env
-echo "BENCH_NETWORK=erpnext-one" >> ~/gitops/erpnext-one.env
+cp example.env ./gitops/erpnext-one.env
+sed -i 's/DB_PASSWORD=123/DB_PASSWORD=osboxes.org/g' ./gitops/erpnext-one.env
+sed -i 's/DB_HOST=/DB_HOST=mariadb-database/g' ./gitops/erpnext-one.env
+sed -i 's/DB_PORT=/DB_PORT=3306/g' ./gitops/erpnext-one.env
+sed -i 's/SITES=`erp.example.com`/SITES=\`one.vms88.com\`,\`two.vms88.com\`/g' ./gitops/erpnext-one.env
+echo 'ROUTER=erpnext-one' >> ./gitops/erpnext-one.env
+echo "BENCH_NETWORK=erpnext-one" >> ./gitops/erpnext-one.env
 ```
 
 Note:
 
 - Change the password from `changeit` to the one set for MariaDB compose in the previous step.
 
-env file is generated at location `~/gitops/erpnext-one.env`.
+env file is generated at location `./gitops/erpnext-one.env`.
 
-Create a yaml file called `erpnext-one.yaml` in `~/gitops` directory:
+Create a yaml file called `erpnext-one.yaml` in `./gitops` directory:
 
 ```shell
 docker compose --project-name erpnext-one \
-  --env-file ~/gitops/erpnext-one.env \
+  --env-file ./gitops/erpnext-one.env \
   -f compose.yaml \
   -f overrides/compose.redis.yaml \
   -f overrides/compose.multi-bench.yaml \
-  -f overrides/compose.multi-bench-ssl.yaml config > ~/gitops/erpnext-one.yaml
+  -f overrides/compose.multi-bench-ssl.yaml config > ./gitops/erpnext-one.yaml
 ```
 
 For LAN setup do not override `compose.multi-bench-ssl.yaml`.
 
-Use the above command after any changes are made to `erpnext-one.env` file to regenerate `~/gitops/erpnext-one.yaml`. e.g. after changing version to migrate the bench.
+Use the above command after any changes are made to `erpnext-one.env` file to regenerate `./gitops/erpnext-one.yaml`. e.g. after changing version to migrate the bench.
 
 Deploy `erpnext-one` containers:
 
 ```shell
-docker compose --project-name erpnext-one -f ~/gitops/erpnext-one.yaml up -d
+docker compose --project-name erpnext-one -f ./gitops/erpnext-one.yaml up -d
 ```
 
 Create sites `one.example.com` and `two.example.com`:
@@ -194,41 +200,41 @@ Setting up additional bench is optional. Continue only if you need multi bench s
 
 Create second bench called `erpnext-two` with `three.example.com` and `four.example.com`
 
-Create a file called `erpnext-two.env` in `~/gitops`
+Create a file called `erpnext-two.env` in `./gitops`
 
 ```shell
-curl -sL https://raw.githubusercontent.com/frappe/frappe_docker/main/example.env -o ~/gitops/erpnext-two.env
-sed -i 's/DB_PASSWORD=123/DB_PASSWORD=changeit/g' ~/gitops/erpnext-two.env
-sed -i 's/DB_HOST=/DB_HOST=mariadb-database/g' ~/gitops/erpnext-two.env
-sed -i 's/DB_PORT=/DB_PORT=3306/g' ~/gitops/erpnext-two.env
-echo "ROUTER=erpnext-two" >> ~/gitops/erpnext-two.env
-echo "SITES=\`three.example.com\`,\`four.example.com\`" >> ~/gitops/erpnext-two.env
-echo "BENCH_NETWORK=erpnext-two" >> ~/gitops/erpnext-two.env
+curl -sL https://raw.githubusercontent.com/frappe/frappe_docker/main/example.env -o ./gitops/erpnext-two.env
+sed -i 's/DB_PASSWORD=123/DB_PASSWORD=changeit/g' ./gitops/erpnext-two.env
+sed -i 's/DB_HOST=/DB_HOST=mariadb-database/g' ./gitops/erpnext-two.env
+sed -i 's/DB_PORT=/DB_PORT=3306/g' ./gitops/erpnext-two.env
+echo "ROUTER=erpnext-two" >> ./gitops/erpnext-two.env
+echo "SITES=\`three.example.com\`,\`four.example.com\`" >> ./gitops/erpnext-two.env
+echo "BENCH_NETWORK=erpnext-two" >> ./gitops/erpnext-two.env
 ```
 
 Note:
 
 - Change the password from `changeit` to the one set for MariaDB compose in the previous step.
 
-env file is generated at location `~/gitops/erpnext-two.env`.
+env file is generated at location `./gitops/erpnext-two.env`.
 
-Create a yaml file called `erpnext-two.yaml` in `~/gitops` directory:
+Create a yaml file called `erpnext-two.yaml` in `./gitops` directory:
 
 ```shell
 docker compose --project-name erpnext-two \
-  --env-file ~/gitops/erpnext-two.env \
+  --env-file ./gitops/erpnext-two.env \
   -f compose.yaml \
   -f overrides/compose.redis.yaml \
   -f overrides/compose.multi-bench.yaml \
-  -f overrides/compose.multi-bench-ssl.yaml config > ~/gitops/erpnext-two.yaml
+  -f overrides/compose.multi-bench-ssl.yaml config > ./gitops/erpnext-two.yaml
 ```
 
-Use the above command after any changes are made to `erpnext-two.env` file to regenerate `~/gitops/erpnext-two.yaml`. e.g. after changing version to migrate the bench.
+Use the above command after any changes are made to `erpnext-two.env` file to regenerate `./gitops/erpnext-two.yaml`. e.g. after changing version to migrate the bench.
 
 Deploy `erpnext-two` containers:
 
 ```shell
-docker compose --project-name erpnext-two -f ~/gitops/erpnext-two.yaml up -d
+docker compose --project-name erpnext-two -f ./gitops/erpnext-two.yaml up -d
 ```
 
 Create sites `three.example.com` and `four.example.com`:
@@ -250,10 +256,10 @@ Also useful if custom domain is required for LAN based access.
 Create environment file
 
 ```shell
-echo "ROUTER=custom-one-example" > ~/gitops/custom-one-example.env
-echo "SITES=\`custom-one.example.com\`" >> ~/gitops/custom-one-example.env
-echo "BASE_SITE=one.example.com" >> ~/gitops/custom-one-example.env
-echo "BENCH_NETWORK=erpnext-one" >> ~/gitops/custom-one-example.env
+echo "ROUTER=custom-one-example" > ./gitops/custom-one-example.env
+echo "SITES=\`custom-one.example.com\`" >> ./gitops/custom-one-example.env
+echo "BASE_SITE=one.example.com" >> ./gitops/custom-one-example.env
+echo "BENCH_NETWORK=erpnext-one" >> ./gitops/custom-one-example.env
 ```
 
 Note:
@@ -270,9 +276,9 @@ Generate yaml to reverse proxy:
 
 ```shell
 docker compose --project-name custom-one-example \
-  --env-file ~/gitops/custom-one-example.env \
+  --env-file ./gitops/custom-one-example.env \
   -f overrides/compose.custom-domain.yaml \
-  -f overrides/compose.custom-domain-ssl.yaml config > ~/gitops/custom-one-example.yaml
+  -f overrides/compose.custom-domain-ssl.yaml config > ./gitops/custom-one-example.yaml
 ```
 
 For LAN setup do not override `compose.custom-domain-ssl.yaml`.
@@ -280,7 +286,7 @@ For LAN setup do not override `compose.custom-domain-ssl.yaml`.
 Deploy `erpnext-two` containers:
 
 ```shell
-docker compose --project-name custom-one-example -f ~/gitops/custom-one-example.yaml up -d
+docker compose --project-name custom-one-example -f ./gitops/custom-one-example.yaml up -d
 ```
 
 ### Site operations
