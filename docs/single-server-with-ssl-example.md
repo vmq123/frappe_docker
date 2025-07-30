@@ -69,7 +69,7 @@ Create a file called `traefik.env` in `./gitops`
 
 ```shell
 echo 'TRAEFIK_DOMAIN=traefik.vms88.com' > ./gitops/traefik.env
-echo 'EMAIL=admin@vms88.com' >> ./gitops/traefik.env
+echo 'EMAIL=vmq123@gmail.com' >> ./gitops/traefik.env
 echo "HASHED_PASSWORD='$(openssl passwd -apr1 osboxes.org)'" >> ./gitops/traefik.env
 ```
 
@@ -92,9 +92,9 @@ If Container does not deploy put the HASHED_PASSWORD in ''.
 Deploy the traefik container with letsencrypt SSL
 
 ```shell
-docker compose --project-name traefik \
-  --env-file ./gitops/traefik.env \
-  -f overrides/compose.traefik.yaml up -d
+# docker compose --project-name traefik \
+#   --env-file ./gitops/traefik.env \
+#   -f overrides/compose.traefik.yaml up -d
 ```
 If having SSL:
 ```shell
@@ -142,7 +142,7 @@ This will make `mariadb-database` service available under `mariadb-network`. Dat
 
 #### Create first bench
 
-Create first bench called `erpnext-one` with `one.vms88.com` and `two.vms88.com`
+Create first bench called `erpnext-one` with `d01.vms88.com` and `d02.vms88.com`
 
 Create a file called `erpnext-one.env` in `./gitops`
 
@@ -151,7 +151,7 @@ cp example.env ./gitops/erpnext-one.env
 sed -i 's/DB_PASSWORD=123/DB_PASSWORD=osboxes.org/g' ./gitops/erpnext-one.env
 sed -i 's/DB_HOST=/DB_HOST=mariadb-database/g' ./gitops/erpnext-one.env
 sed -i 's/DB_PORT=/DB_PORT=3306/g' ./gitops/erpnext-one.env
-sed -i 's/SITES=`erp.example.com`/SITES=\`one.vms88.com\`,\`two.vms88.com\`/g' ./gitops/erpnext-one.env
+sed -i 's/SITES=`erp.example.com`/SITES=\`d01.vms88.com\`,\`d02.vms88.com\`/g' ./gitops/erpnext-one.env
 echo 'ROUTER=erpnext-one' >> ./gitops/erpnext-one.env
 echo "BENCH_NETWORK=erpnext-one" >> ./gitops/erpnext-one.env
 ```
@@ -165,11 +165,11 @@ env file is generated at location `./gitops/erpnext-one.env`.
 Create a yaml file called `erpnext-one.yaml` in `./gitops` directory:
 
 ```shell
-docker compose --project-name erpnext-one \
-  --env-file ./gitops/erpnext-one.env \
-  -f compose.yaml \
-  -f overrides/compose.redis.yaml \
-  -f overrides/compose.multi-bench.yaml config > ./gitops/erpnext-one.yaml
+# docker compose --project-name erpnext-one \
+#   --env-file ./gitops/erpnext-one.env \
+#   -f compose.yaml \
+#   -f overrides/compose.redis.yaml \
+#   -f overrides/compose.multi-bench.yaml config > ./gitops/erpnext-one.yaml
 ```
 If SSL
 ```shell
@@ -191,12 +191,12 @@ Deploy `erpnext-one` containers:
 docker compose --project-name erpnext-one -f ./gitops/erpnext-one.yaml up -d
 ```
 
-Create sites `one.vms88.com` and `two.vms88.com`:
+Create sites `d01.vms88.com` and `d02.vms88.com`:
 
 ```shell
-# one.vms88.com
+# d01.vms88.com
 docker compose --project-name erpnext-one exec backend \
-  bench new-site --mariadb-user-host-login-scope=% --db-root-password osboxes.org --install-app erpnext --admin-password osboxes.org one.vms88.com
+  bench new-site --mariadb-user-host-login-scope=% --db-root-password osboxes.org --install-app erpnext --admin-password osboxes.org d01.vms88.com
 ```
 
 # Add Frappe HR app
@@ -204,10 +204,10 @@ docker compose --project-name erpnext-one exec backend \
   bench get-app --branch version-15 hrms
 
 docker compose --project-name erpnext-one exec backend \
-  bench --site one.vms88.com install-app hrms
+  bench --site d01.vms88.com install-app hrms
 
-docker compose --project-name erpnext-one exec backend \
-  bench restart
+<!-- docker compose --project-name erpnext-one exec backend \
+  bench restart -->
 
 docker ps
 
