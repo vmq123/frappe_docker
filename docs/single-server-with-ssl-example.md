@@ -39,9 +39,6 @@ curl -SL https://github.com/docker/compose/releases/download/v2.2.3/docker-compo
 chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 ```
 
-### Enable
-sudo usermod -aG docker $USER
-
 ### Prepare
 
 Clone `frappe_docker` repo for the needed YAMLs and change the current working directory of your shell to the cloned repo.
@@ -64,12 +61,6 @@ The `./gitops` directory will store all the resources that we use for setup. We 
 Basic Traefik setup using docker compose.
 
 Create a file called `traefik.env` in `./gitops`
-
-### remove it from git
-git rm -r --cached ./gitops
-git commit -m "Remove ./gitops from Git tracking"
-git push
-
 
 ```shell
 echo 'TRAEFIK_DOMAIN=traefik.vms88.com' > ./gitops/traefik.env
