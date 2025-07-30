@@ -56,6 +56,11 @@ mkdir ./gitops
 
 The `./gitops` directory will store all the resources that we use for setup. We will also keep the environment files in this directory as there will be multiple projects with different environment variables. You can create a private repo for this directory and track the changes there.
 
+### remove it from git
+git rm -r --cached ./gitops
+git commit -m "Remove ./gitops from Git tracking"
+git push
+
 ### Install Traefik
 
 Basic Traefik setup using docker compose.
