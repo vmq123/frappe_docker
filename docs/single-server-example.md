@@ -137,7 +137,9 @@ Note: Change the password from `changeit` to more secure one.
 Deploy the mariadb container
 
 ```shell
-docker compose --project-name mariadb --env-file ./gitops/mariadb.env -f overrides/compose.mariadb-shared.yaml up -d
+docker compose --project-name mariadb --env-file ./gitops/mariadb.env -f overrides/compose.mariadb-shared.yaml config > ./gitops/mariadb.yaml
+
+docker compose --project-name mariadb -f ./gitops/mariadb.yaml up -d
 ```
 
 This will make `mariadb-database` service available under `mariadb-network`. Data will reside in `/data/mariadb`.

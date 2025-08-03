@@ -1,0 +1,31 @@
+services:
+  database:
+    command:
+    - --character-set-server=utf8mb4
+    - --collation-server=utf8mb4_unicode_ci
+    - --skip-character-set-client-handshake
+    - --skip-innodb-read-only-compressed
+    container_name: mariadb-database
+    environment:
+      MYSQL_ROOT_PASSWORD: osboxes.org
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - mysqladmin ping -h localhost --password=osboxes.org
+      interval: 1s
+      retries: 20
+    image: mariadb:10.6
+    networks:
+      mariadb-network: null
+    restart: unless-stopped
+    volumes:
+    - type: volume
+      source: db-data
+      target: /var/lib/mysql
+      volume: {}
+networks:
+  mariadb-network:
+    name: mariadb-network
+volumes:
+  db-data:
+    name: mariadb_db-data

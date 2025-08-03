@@ -101,7 +101,9 @@ If having SSL:
 docker compose --project-name traefik \
   --env-file ./gitops/traefik.env \
   -f overrides/compose.traefik.yaml \
-  -f overrides/compose.traefik-ssl.yaml up -d
+  -f overrides/compose.traefik-ssl.yaml config > ./gitops/traefik.yaml
+
+docker compose --project-name traefik -f ./gitops/traefik.yaml up -d
 ```
 
 This will make the traefik dashboard available on `traefik.vms88.com` and all certificates will reside in the Docker volume `cert-data`.
@@ -205,6 +207,18 @@ docker compose --project-name erpnext-one exec backend \
 
 docker compose --project-name erpnext-one exec backend \
   bench --site d01.vms88.com install-app hrms
+
+# Add Touropt
+docker compose --project-name erpnext-one exec backend \
+  bench get-app https://github.com/vmq123/touropt.git
+
+docker compose --project-name erpnext-one exec backend \
+  bench --site d01.vms88.com install-app touropt
+
+docker exec -it erpnext-one-backend-1 sh
+
+docker compose --project-name erpnext-one exec backend \
+  bench --site d01.vms88.com migrate
 
 <!-- docker compose --project-name erpnext-one exec backend \
   bench restart -->
