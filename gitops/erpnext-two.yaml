@@ -28,7 +28,7 @@ services:
     - bash
     - -c
     environment:
-      DB_HOST: mariadb
+      DB_HOST: mariadb-database-two
       DB_PORT: "3306"
       REDIS_CACHE: redis-cache:6379
       REDIS_QUEUE: redis-queue:6379
@@ -67,7 +67,7 @@ services:
       traefik.docker.network: traefik-public
       traefik.enable: "true"
       traefik.http.routers.erpnext-two-http.entrypoints: http
-      traefik.http.routers.erpnext-two-http.rule: Host(`two.vms88.com`)
+      traefik.http.routers.erpnext-two-http.rule: Host(`c03.vms88.com`)
       traefik.http.routers.erpnext-two-http.service: erpnext-two
       traefik.http.services.erpnext-two.loadbalancer.server.port: "8080"
     networks:
@@ -184,9 +184,6 @@ networks:
   mariadb-network:
     name: mariadb-network
     external: true
-    driver: bridge
-    driver_opts:
-      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
   traefik-public:
     name: traefik-public
     external: true
